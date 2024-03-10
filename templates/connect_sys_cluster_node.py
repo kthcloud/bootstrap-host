@@ -47,6 +47,8 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         # Run curl command to install K3s
         cmd = f"{k3s_curl} | sh -"
         os.system(cmd)
+        # Set permission for kubeconfig
+        os.system("chmod 644 /etc/rancher/k3s/k3s.yaml")
 
     elif nodeType == "worker":
         print("Joining an existing K3s cluster")
