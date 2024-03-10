@@ -1,4 +1,6 @@
-# 🛠️ kthcloud/ansible-setup-host
+# 🛠️ kthcloud/boostrap-host
+
+*This repository is meant to replace the [kthcloud/ansible-setup-host](https://github.com/kthcloud/ansible-setup-host) repository.*
 
 This Ansible playbook will setup a kthcloud host with all the necessary settings and tools to be used as a kthcloud host.
 This include configuring libvirt, settings up GPU passthrough, and installing [kthcloud/host-api](https://github.com/kthcloud/host-api).
