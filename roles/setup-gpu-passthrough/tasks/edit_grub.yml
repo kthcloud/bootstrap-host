@@ -1,0 +1,30 @@
+# sudo nano /etc/default/grub
+# Edit or add GRUB_CMDLINE_LINUX_DEFAULT so it includes the option and all of the GPU IDs from the previous step:
+# GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on vfio-pci.ids=<id1>,<id2>,<id...>"
+# For example:
+# GRUB_CMDLINE_LINUX_DEFAULT="intel_iommu=on vfio-pci.ids=10de:1eb0,10de:10f8,10de:1ad8,10de:1ad9"
+# sudo update-grub
+# Reboot the machine
+
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Updating GRUB"
+  when: configured
+
+- name: "Edit grub config file"
+  lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT"
+    line: "GRUB_CMDLINE_LINUX_DEFAULT=\"intel_iommu=on vfio-pci.ids={{ gpu_device_ids }}\""
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: "Update grub"
+  shell: "update-grub"
+
+
+  

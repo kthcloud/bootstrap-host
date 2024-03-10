@@ -1,0 +1,14 @@
+[Unit]
+Description=Local API for status reporting
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory={{ apps_install_path }}/host-api
+ExecStartPre=npm install
+ExecStart=npm start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

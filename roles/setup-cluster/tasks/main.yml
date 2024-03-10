@@ -1,0 +1,31 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Setting up cluster"
+
+
+
+- name: Read setup-config.yml content
+  ansible.builtin.slurp:
+    src: /etc/kthcloud/setup-config.yml
+  register: setup_config_content
+
+- name: Decode setup-config.yml content from base64
+  ansible.builtin.set_fact:
+    setup_config: "{{ setup_config_content.content | b64decode | from_yaml }}"
+
+- name: Set up Sys cluster node
+  include_tasks: setup_sys_cluster_node.yml
+  when: setup_config.k8s.clusterType == 'sys'
+
+- name: Set up Rancher cluster node
+  include_tasks: setup_rancher_node.yml
+  when: setup_config.k8s.clusterType == 'rancher'
+
+
+
+
+
+

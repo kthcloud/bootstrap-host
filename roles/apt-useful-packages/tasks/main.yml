@@ -1,0 +1,27 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Installing required APT packages"
+
+- name: Update all packages to their latest version
+  apt:
+    name:
+      [
+        "neofetch",
+        "tree",
+        "vim",
+        "net-tools",
+        "chrony",
+        "cloudstack-agent",
+        "qemu-kvm",
+        "libvirt-daemon-system",
+        "libvirt-clients",
+        "bridge-utils",
+        "lm-sensors",
+        "ipmitool"
+      ]
+    state: latest
+    update_cache: yes
+  ignore_errors: true

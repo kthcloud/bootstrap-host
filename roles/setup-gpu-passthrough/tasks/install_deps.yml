@@ -1,0 +1,25 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "!!! Ensure PCIe virtualization enabled in BIOS !!!"
+  when: configured
+
+- name: "Ensure PCIe virtualization"
+  debug:
+    msg: "Please ensure PCIe virtualization is enabled in BIOS before this step"
+
+- name: "Install dependencies"
+  apt:
+    name:
+      [
+        qemu-utils,
+        libvirt-daemon-system,
+        libvirt-clients,
+        bridge-utils,
+        virt-manager,
+        ovmf,
+      ]
+    state: latest
+    update_cache: yes

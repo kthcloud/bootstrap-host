@@ -1,0 +1,82 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Setting up GPU passthrough"
+
+- name: Install all pip dependencies
+  pip:
+    name: ["jc", "jmespath"]
+    state: latest
+
+- name: Test database connection
+  ansible.builtin.command: |
+    python3 -c
+    '
+    import subprocess
+    import json
+    proc = subprocess.Popen(["lspci -knnmmvvv | jc --lspci"], stdout=subprocess.PIPE, shell=True)
+    (res, err) = proc.communicate()
+    res_json = json.loads(res)
+    bus_ids = []
+    device_ids = set()
+    is_configured = True
+    for device in res_json:
+        if "NVIDIA" in device["vendor"]:
+            bus_ids.append(device["slot"])
+            device_ids.add(device["vendor_id"] + ":" + device["device_id"])
+            if "driver" not in device or "vfio-pci" not in device["driver"]:
+                is_configured = False
+
+    output = {}
+    output["bus_ids"] = " ".join(bus_ids)
+    output["device_ids"] = ",".join(device_ids)
+    output["configured"] = is_configured
+    print(json.dumps(output))
+    '
+  register: gpu_info
+
+- name: "Print gpu info"
+  debug: 
+    msg: "{{ gpu_info.stdout  }}"
+
+- name: "Check if already configured"
+  set_fact: configured="{{ gpu_info.stdout | from_json | community.general.json_query('configured')  }}"
+
+- name: "Check gpu bus ids"
+  set_fact: gpu_bus_ids="{{ gpu_info.stdout | from_json | community.general.json_query('bus_ids')  }}"
+
+- name: "Create bus id (padding: '0000:')"
+  set_fact: padded_gpu_bus_ids="{{ gpu_bus_ids.split() | map('regex_replace', '^(.*)$', '0000:\\1') }}"
+
+- name: "Convert list to string"
+  set_fact: padded_gpu_bus_ids="{{ padded_gpu_bus_ids | join(' ') }}"
+
+- name: "Check gpu device ids"
+  set_fact: gpu_device_ids="{{ gpu_info.stdout | from_json | community.general.json_query('device_ids')  }}"
+
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "GPU passthrough already installed, skipping"
+  when: configured
+
+
+- name: "Install dependencies"
+  include_tasks: 
+    file: install_deps.yml
+  when: not configured
+ 
+- name: "Edit grub config file"
+  include_tasks: 
+    file: edit_grub.yml
+  when: not configured
+ 
+- name: "Apply VFIO driver template"
+  include_tasks: 
+    file: apply_vfio_driver.yml
+  when: not configured
+
+

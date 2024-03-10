@@ -1,0 +1,23 @@
+#!/bin/sh
+
+PREREQ=""
+
+prereqs()
+{
+   echo "$PREREQ"
+}
+
+case $1 in
+prereqs)
+   prereqs
+   exit 0
+   ;;
+esac
+
+for dev in {{ padded_gpu_bus_ids }}
+do 
+ echo "vfio-pci" > /sys/bus/pci/devices/$dev/driver_override 
+ echo "$dev" > /sys/bus/pci/drivers/vfio-pci/bind 
+done
+
+exit 0

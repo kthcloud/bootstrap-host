@@ -1,0 +1,19 @@
+---
+- hosts: 127.0.0.1
+  vars_files:
+    - config.yml
+  become: true
+  roles:
+    - lcd-setup
+    - set-timezone
+    - configure-repos
+    - apt-update-upgrade
+    - apt-useful-packages
+    - pip-packages
+    - disable-apparmor
+    - config-libvirt
+    - configure-cloudstack-agent
+    - setup-gpu-passthrough
+    - configure-api
+    - setup-cloudstack
+    - lcd-reset

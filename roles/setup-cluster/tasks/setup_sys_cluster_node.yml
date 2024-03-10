@@ -1,0 +1,10 @@
+- name: Copy script from templates
+  ansible.builtin.copy:
+    src: "{{ templates_path }}/connect_sys_cluster_node.py"
+    dest: /usr/bin/kthcloud-connect
+    owner: root
+    group: root
+    mode: 0755
+    
+- name: Run connect script
+  command: /usr/bin/connect

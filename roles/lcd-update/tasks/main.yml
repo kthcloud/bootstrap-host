@@ -1,0 +1,7 @@
+#update lcd message: write message to /etc/lcd, it should only contain the message.
+---
+- name: Update LCD progress message
+  copy:
+    content: "{{ lcd_message }}"
+    dest: /etc/lcd
+  changed_when: False

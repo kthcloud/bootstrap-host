@@ -1,0 +1,18 @@
+---
+
+- name: Check if a reboot is required.
+  stat:
+    path: /var/run/reboot-required
+    get_md5: no
+  register: reboot_required_file
+
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Rebooting to apply updates"
+  when: reboot_required_file.stat.exists == true
+
+- name: Reboot the server (if required).
+  reboot:
+  when: reboot_required_file.stat.exists == true

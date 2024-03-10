@@ -1,0 +1,26 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Applying VFIO driver"
+  when: configured
+
+- name: "Apply driver template"
+  template: 
+    src: "{{ templates_path }}/driver"
+    dest: /etc/initramfs-tools/scripts/init-top/vfio.sh 
+    mode: 644
+
+- name: "chmod driver"
+  shell: "sudo chmod +x /etc/initramfs-tools/scripts/init-top/vfio.sh"
+
+- name: "Set initramfs options"
+  copy:
+    content: "options kvm ignore_msrs=1"
+    dest: /etc/initramfs-tools/modules
+    force: true
+    mode: "0755"
+    
+- name: "Update initramfs"
+  shell: "sudo update-initramfs -u -k all"

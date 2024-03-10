@@ -1,0 +1,42 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Configuring kthcloud API"
+  when: configured
+
+# Install NodeJS 16 (only v10 when not adding repo). Will be moved later to common role
+- name: "Add nodejs apt key"
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+- name: "Add nodejs 18.x ppa for apt repo"
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_18.x jammy main
+    update_cache: yes
+- name: "Install nodejs"
+  apt:
+    update_cache: yes
+    name: 
+      [
+        nodejs
+      ]
+    state: present
+- name: "Delete old host-api folder"
+  file:
+    path: "{{ apps_install_path }}/host-api"
+    state: absent
+- name: Clone repo
+  ansible.builtin.git:
+    repo: "{{ host_api_git_url }}"
+    dest: "{{ apps_install_path }}/host-api"
+
+- name: "Create Unit file"
+  template: src={{ templates_path }}/host-api.service dest=/lib/systemd/system/host-api.service mode=644
+
+- name: "Reload systemctl"
+  command: systemctl daemon-reload
+  
+- name: "Restart service"
+  service: name=host-api.service state=restarted enabled=yes

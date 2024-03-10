@@ -1,0 +1,6 @@
+---
+- name: Reset LCD to hostname
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "{{ ansible_hostname }}"

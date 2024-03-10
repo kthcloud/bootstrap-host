@@ -1,0 +1,19 @@
+---
+- name: Update LCD message
+  ansible.builtin.import_role:
+    name: lcd-update
+  vars:
+    lcd_message: "Updating APT cache"
+
+- name: Update cache.
+  ansible.builtin.apt:
+    update_cache: true
+    state: latest
+
+- name: Upgrade all software.
+  ansible.builtin.apt:
+    upgrade: yes
+
+- name: Remove dependencies that are no longer required.
+  apt:
+    autoremove: yes

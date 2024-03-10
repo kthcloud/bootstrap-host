@@ -1,0 +1,10 @@
+[Unit]
+Description=LCD Service
+
+[Service]
+ExecStart=/usr/bin/lcd
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target

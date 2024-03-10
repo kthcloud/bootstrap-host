@@ -1,0 +1,4 @@
+timezone: "Europe/Stockholm"
+templates_path: "{{playbook_dir}}/templates"
+host_api_git_url: "https://github.com/kthcloud/host-api.git"
+apps_install_path: "/opt"
