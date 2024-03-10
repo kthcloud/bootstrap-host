@@ -26,7 +26,7 @@ def load_config():
     return config
 
 
-def connect(role: str, server_url: str = None, token: str = None):
+def connect(nodeType: str, server_url: str = None, token: str = None):
     """
         Connect as a cluster node to the K3s system cluster
 
@@ -35,20 +35,20 @@ def connect(role: str, server_url: str = None, token: str = None):
         server_url and token are required if role is "worker"
     """
 
-    if role not in ["master", "worker"]:
+    if nodeType not in ["master", "worker"]:
         raise ValueError("Role must be either 'master' or 'worker'")
 
-    if role == "worker" and (server_url is None or token is None):
+    if nodeType == "worker" and (server_url is None or token is None):
         raise ValueError("server_url and token are required for worker nodes")
 
-    if role == "master":
+    if nodeType == "master":
         print("Creating a new K3s cluster")
 
         # Run curl command to install K3s
         cmd = f"{k3s_curl} | sh -"
         os.system(cmd)
 
-    elif role == "worker":
+    elif nodeType == "worker":
         print("Joining an existing K3s cluster")
 
         # Run curl command to install K3s
@@ -60,17 +60,18 @@ def main():
     config = load_config()
 
     # Get the role of the node
-    role = config["k8s"]["role"]
-    if role == "worker":
+    nodeType = config["k8s"]["nodeType"]
+    if nodeType == "worker":
         try:
             server_url = config["k8s"]["server_url"]
             token = config["k8s"]["token"]
-            connect(role, server_url, token)
         except KeyError:
             raise ValueError(
                 "server_url and token are required for worker nodes")
+        
+        connect(nodeType, server_url, token)
     else:
-        connect(role)
+        connect(nodeType)
 
 
 if __name__ == "__main__":

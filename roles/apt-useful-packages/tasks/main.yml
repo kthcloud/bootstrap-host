@@ -14,7 +14,6 @@
         "vim",
         "net-tools",
         "chrony",
-        "cloudstack-agent",
         "qemu-kvm",
         "libvirt-daemon-system",
         "libvirt-clients",
