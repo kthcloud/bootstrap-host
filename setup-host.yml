@@ -13,6 +13,6 @@
     - disable-apparmor
     - config-libvirt
     - setup-gpu-passthrough
-    - configure-api
+    - setup-host-api
     - setup-cluster
     - lcd-reset
