@@ -9,8 +9,3 @@
   pip:
     name: ["jc"]
     state: latest
-
-- name: Install CloudStack
-  pip:
-    name: ["cs"]
-    state: latest
