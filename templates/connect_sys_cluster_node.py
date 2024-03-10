@@ -5,6 +5,7 @@ import os
 import yaml
 
 k3s_curl = "curl -sfL https://get.k3s.io"
+k3s_version = "v1.27.11+k3s1"
 
 
 def load_config():
@@ -45,10 +46,8 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         print("Creating a new K3s cluster")
 
         # Run curl command to install K3s
-        cmd = f"{k3s_curl} | sh -"
+        cmd = f"{k3s_curl} | | INSTALL_K3S_VERSION={k3s_version} INSTALL_K3S_EXEC=\"server --write-kubeconfig-mode=644 --disable=traefik --disable=servicelb\" sh -"
         os.system(cmd)
-        # Set permission for kubeconfig
-        os.system("chmod 644 /etc/rancher/k3s/k3s.yaml")
 
     elif nodeType == "worker":
         print("Joining an existing K3s cluster")
