@@ -5,8 +5,6 @@
   vars:
     lcd_message: "Setting up cluster"
 
-
-
 - name: Read setup-config.yml content
   ansible.builtin.slurp:
     src: /etc/kthcloud/setup-config.yml

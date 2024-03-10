@@ -7,4 +7,4 @@
     mode: 0755
     
 - name: Run connect script
-  command: /usr/bin/connect
+  command: /usr/bin/kthcloud-connect
