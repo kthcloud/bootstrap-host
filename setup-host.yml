@@ -12,8 +12,7 @@
     - pip-packages
     - disable-apparmor
     - config-libvirt
-    - configure-cloudstack-agent
     - setup-gpu-passthrough
     - configure-api
-    - setup-cloudstack
+    - setup-cluster
     - lcd-reset
