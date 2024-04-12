@@ -7,20 +7,20 @@
 
 - name: Read setup-config.yml content
   ansible.builtin.slurp:
-    src: /etc/kthcloud/setup-config.yml
-  register: setup_config_content
+    src: /etc/kthcloud/config.yml
+  register: config_content
 
 - name: Decode setup-config.yml content from base64
   ansible.builtin.set_fact:
-    setup_config: "{{ setup_config_content.content | b64decode | from_yaml }}"
+    config: "{{ config_content.content | b64decode | from_yaml }}"
 
 - name: Set up Sys cluster node
   include_tasks: setup_sys_cluster_node.yml
-  when: setup_config.k8s.clusterType == 'sys'
+  when: config.clusterType == 'sys'
 
 - name: Set up Rancher cluster node
   include_tasks: setup_rancher_node.yml
-  when: setup_config.k8s.clusterType == 'rancher'
+  when: config.k8s.clusterType == 'rancher'
 
 
 
