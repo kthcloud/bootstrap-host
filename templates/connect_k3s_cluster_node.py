@@ -63,11 +63,11 @@ def main():
     config = load_config()
 
     # Get the role of the node
-    nodeType = config["k8s"]["nodeType"]
+    nodeType = config["nodeType"]
     if nodeType == "worker":
         try:
-            server_url = config["k8s"]["server_url"]
-            token = config["k8s"]["token"]
+            server_url = config["k3s"]["serverUrl"]
+            token = config["k3s"]["nodeToken"]
         except KeyError:
             raise ValueError(
                 "server_url and token are required for worker nodes")

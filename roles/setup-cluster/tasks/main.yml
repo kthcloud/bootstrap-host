@@ -14,8 +14,8 @@
   ansible.builtin.set_fact:
     config: "{{ config_content.content | b64decode | from_yaml }}"
 
-- name: Set up Sys cluster node
-  include_tasks: setup_sys_cluster_node.yml
+- name: Set up K3s cluster node
+  include_tasks: setup_k3s_cluster_node.yml
   when: config.clusterType == 'k3s'
 
 - name: Set up Rancher cluster node
