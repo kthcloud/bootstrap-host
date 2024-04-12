@@ -16,11 +16,11 @@
 
 - name: Set up Sys cluster node
   include_tasks: setup_sys_cluster_node.yml
-  when: config.clusterType == 'sys'
+  when: config.clusterType == 'k3s'
 
 - name: Set up Rancher cluster node
   include_tasks: setup_rancher_node.yml
-  when: config.k8s.clusterType == 'rancher'
+  when: config.clusterType == 'rancher'
 
 
 
