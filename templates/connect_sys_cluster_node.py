@@ -10,8 +10,10 @@ k3s_version = "v1.27.11+k3s1"
 
 def load_config():
     possible_places = [
-        "/etc/kthcloud/setup-config.yml",
-        "/etc/kthcloud/setup-config.yaml"
+        "/etc/kthcloud/config.yml",
+        "/etc/kthcloud/config.yaml",
+        "./config.yml",
+        "./config.yaml"
     ]
 
     config = None

@@ -6,10 +6,10 @@ import os
 
 def load_config():
     possible_places = [
-        "/etc/kthcloud/setup-config.yml",
-        "/etc/kthcloud/setup-config.yaml",
-        "./setup-config.yml",
-        "./setup-config.yaml"
+        "/etc/kthcloud/config.yml",
+        "/etc/kthcloud/config.yaml",
+        "./config.yml",
+        "./config.yaml"
     ]
 
     config = None
