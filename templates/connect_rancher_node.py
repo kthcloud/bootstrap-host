@@ -35,12 +35,7 @@ def main():
 
     rancher_client.list_clusters()
 
-
-
-
-
-
-
+    
 
 if __name__ == "__main__":
     main()

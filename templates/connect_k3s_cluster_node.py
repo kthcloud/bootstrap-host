@@ -63,7 +63,7 @@ def main():
     config = load_config()
 
     # Get the role of the node
-    nodeType = config["nodeType"]
+    nodeType = config["k3s"]["nodeType"]
     if nodeType == "worker":
         try:
             server_url = config["k3s"]["serverUrl"]
