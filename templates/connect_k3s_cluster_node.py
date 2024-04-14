@@ -66,7 +66,7 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         log_ok("Creating a new K3s cluster")
 
         # Run curl command to install K3s
-        cmd = f"{k3s_curl} | | INSTALL_K3S_VERSION={k3s_version} INSTALL_K3S_EXEC=\"server --write-kubeconfig-mode=644 --disable=traefik --disable=servicelb\" sh -"
+        cmd = f"{k3s_curl} | INSTALL_K3S_VERSION={k3s_version} INSTALL_K3S_EXEC=\"server --write-kubeconfig-mode=644 --disable=traefik --disable=servicelb\" sh -"
         log_ok(f"Full command: {cmd}")
         
         os.system(cmd)
@@ -77,7 +77,7 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         # Run curl command to install K3s
         cmd = f"{k3s_curl} | K3S_URL={server_url} K3S_TOKEN={token} sh -"
         log_ok(f"Full command: {cmd}")
-        
+
         os.system(cmd)
 
 
