@@ -5,6 +5,10 @@
     owner: root
     group: root
     mode: 0755
-    
+
+- name: Install Rancher client python package
+  ansible.builtin.pip:
+    name: git+https://github.com/rancher/client-python.git@master
+
 - name: Run connect script
   command: /usr/bin/kthcloud-connect
