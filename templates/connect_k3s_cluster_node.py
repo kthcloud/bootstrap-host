@@ -24,6 +24,7 @@ def log_error(msg):
     now = datetime.datetime.now()
     print(f"{now} {RED}{CROSS}{RESET} {msg}")
 
+
 def load_config():
     possible_places = [
         "/etc/kthcloud/config.yml",
@@ -68,8 +69,12 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         # Run curl command to install K3s
         cmd = f"{k3s_curl} | INSTALL_K3S_VERSION={k3s_version} INSTALL_K3S_EXEC=\"server --write-kubeconfig-mode=644 --disable=traefik --disable=servicelb\" sh -"
         log_ok(f"Full command: {cmd}")
-        
         os.system(cmd)
+
+        # Copy the kubeconfig file to cloud user's home directory
+        os.system("sudo cp /etc/rancher/k3s/k3s.yaml /home/cloud/.kube/config")
+        os.system(
+            "sudo chown cloud /home/cloud/.kube/config && sudo chmod 644 /home/cloud/.kube/config")
 
     elif nodeType == "worker":
         log_ok("Joining an existing K3s cluster")
@@ -77,7 +82,6 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         # Run curl command to install K3s
         cmd = f"{k3s_curl} | K3S_URL={server_url} K3S_TOKEN={token} sh -"
         log_ok(f"Full command: {cmd}")
-
         os.system(cmd)
 
 
@@ -93,7 +97,7 @@ def main():
         except KeyError:
             raise ValueError(
                 "server_url and token are required for worker nodes")
-        
+
         connect(nodeType, server_url, token)
     else:
         connect(nodeType)
