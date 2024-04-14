@@ -105,16 +105,18 @@ def main():
 
     # Trim whitespace
     nodeCommand = nodeCommand.strip()
-    log_ok(f"Node registration command ({nodeCommand[:50]}...)")
+    log_ok(f"Node registration command found")
 
     # Run the node registration command
     roles = config['rancher']['roles']
+    roles_str = ", ".join(roles)
+    log_ok(f"Roles: {roles_str}")
     url_roles = roles_to_url_list(roles)
 
     cmd = f"{nodeCommand} {url_roles}"
     log_ok(f"Full command: {cmd}")
 
-    os.system(cmd)
+    # os.system(cmd)
 
 if __name__ == "__main__":
     main()
