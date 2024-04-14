@@ -63,9 +63,13 @@ def load_config():
 def main():
     config = load_config()
 
-    rancher_client = rancher.Client(url=config['rancher']['url'],
-                                    access_key=config['rancher']['apiKey'],
-                                    secret_key=config['rancher']['secret'], verify=False)
+    try:
+        rancher_client = rancher.Client(url=config['rancher']['url'],
+                                        access_key=config['rancher']['apiKey'],
+                                        secret_key=config['rancher']['secret'], verify=False)
+    except Exception as e:
+        log_error(f"Failed to connect to Rancher (Did you present the correct API key?). Error details: {e}")
+        return
 
     res = rancher_client.list_cluster()
 
@@ -116,7 +120,7 @@ def main():
     cmd = f"{nodeCommand} {url_roles}"
     log_ok(f"Full command: {cmd}")
 
-    # os.system(cmd)
+    os.system(cmd)
 
 if __name__ == "__main__":
     main()
