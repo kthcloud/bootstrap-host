@@ -19,7 +19,7 @@
   when: config.clusterType == 'k3s'
 
 - name: Set up Rancher cluster node
-  include_tasks: setup_rancher_node.yml
+  include_tasks: setup_rancher_cluster_node.yml
   when: config.clusterType == 'rancher'
 
 
