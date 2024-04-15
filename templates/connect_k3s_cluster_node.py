@@ -72,9 +72,11 @@ def connect(nodeType: str, server_url: str = None, token: str = None):
         os.system(cmd)
 
         # Sleep for 1 minute to ensure K3s is up and running, and that the kubeconfig file is created
+        log_ok("K3s successfully installed. Sleeping for 60 seconds to ensure K3s is up and running")
         os.system("sleep 60")
 
         # Copy the kubeconfig file to cloud user's home directory
+        log_ok("Copying kubeconfig file to cloud user's home directory")
         os.system("sudo cp /etc/rancher/k3s/k3s.yaml /home/cloud/.kube/config")
         os.system(
             "sudo chown cloud /home/cloud/.kube/config && sudo chmod 644 /home/cloud/.kube/config")
