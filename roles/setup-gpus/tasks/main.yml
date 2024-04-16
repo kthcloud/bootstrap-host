@@ -10,31 +10,16 @@
     name: ["jc", "jmespath"]
     state: latest
 
-- name: Test database connection
-  ansible.builtin.command: |
-    python3 -c
-    '
-    import subprocess
-    import json
-    proc = subprocess.Popen(["lspci -knnmmvvv | jc --lspci"], stdout=subprocess.PIPE, shell=True)
-    (res, err) = proc.communicate()
-    res_json = json.loads(res)
-    bus_ids = []
-    device_ids = set()
-    is_configured = True
-    for device in res_json:
-        if "NVIDIA" in device["vendor"]:
-            bus_ids.append(device["slot"])
-            device_ids.add(device["vendor_id"] + ":" + device["device_id"])
-            if "driver" not in device or "vfio-pci" not in device["driver"]:
-                is_configured = False
+- name: Copy script from templates
+  ansible.builtin.copy:
+    src: "{{ templates_path }}/print_passthrough_gpus.py"
+    dest: /usr/bin/kthcloud-passthrough-gpus
+    owner: root
+    group: root
+    mode: 0755
 
-    output = {}
-    output["bus_ids"] = " ".join(bus_ids)
-    output["device_ids"] = ",".join(device_ids)
-    output["configured"] = is_configured
-    print(json.dumps(output))
-    '
+- name: "Get GPU info"
+  command: /usr/bin/kthcloud-gpus
   register: gpu_info
 
 - name: "Print gpu info"
