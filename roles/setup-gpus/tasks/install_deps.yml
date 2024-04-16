@@ -1,11 +1,4 @@
 ---
-- name: Update LCD message
-  ansible.builtin.import_role:
-    name: lcd-update
-  vars:
-    lcd_message: "!!! Ensure PCIe virtualization enabled in BIOS !!!"
-  when: configured
-
 - name: "Ensure PCIe virtualization"
   debug:
     msg: "Please ensure PCIe virtualization is enabled in BIOS before this step"
@@ -23,3 +16,15 @@
       ]
     state: latest
     update_cache: yes
+  when: requires_configuration
+
+- name: "Install non-passthrough dependencies"
+  apt:
+    name:
+      [
+        nvidia-driver-550-server,
+        nvidia-utils-550-server
+      ]
+    state: latest
+    update_cache: yes
+  when: has_non_passthrough

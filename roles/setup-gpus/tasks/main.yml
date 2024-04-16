@@ -26,8 +26,11 @@
   debug: 
     msg: "{{ gpu_info.stdout  }}"
 
-- name: "Check if already configured"
-  set_fact: configured="{{ gpu_info.stdout | from_json | community.general.json_query('configured')  }}"
+- name: "Check if requires configuration"
+  set_fact: requires_configuration="{{ gpu_info.stdout | from_json | community.general.json_query('requires_configuration')  }}"
+
+- name: "Check if has non-passthrough gpus"
+  set_fact: has_non_passthrough="{{ gpu_info.stdout | from_json | community.general.json_query('has_non_passthrough')  }}
 
 - name: "Check gpu bus ids"
   set_fact: gpu_bus_ids="{{ gpu_info.stdout | from_json | community.general.json_query('bus_ids')  }}"
@@ -41,27 +44,18 @@
 - name: "Check gpu device ids"
   set_fact: gpu_device_ids="{{ gpu_info.stdout | from_json | community.general.json_query('device_ids')  }}"
 
-- name: Update LCD message
-  ansible.builtin.import_role:
-    name: lcd-update
-  vars:
-    lcd_message: "GPU passthrough already installed, skipping"
-  when: configured
-
-
 - name: "Install dependencies"
   include_tasks: 
     file: install_deps.yml
-  when: not configured
  
 - name: "Edit grub config file"
   include_tasks: 
     file: edit_grub.yml
-  when: not configured
+  when: requires_configuration
  
 - name: "Apply VFIO driver template"
   include_tasks: 
     file: apply_vfio_driver.yml
-  when: not configured
+  when: requires_configuration
 
 
