@@ -7,9 +7,11 @@ import sys
 
 def output_empty():
     print(json.dumps({"bus_ids": "", "device_ids": "", "has_non_passthrough": False, "requires_configuration": False}))
+    sys.exit(0)
 
 def output(data):
     print(json.dumps(data))
+    sys.exit(0)
 
 def run_cmd(cmd):
     proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True)
@@ -22,7 +24,6 @@ gpu_cmd = "lspci -knnmmvvv | jc --lspci"
 res = run_cmd(gpu_cmd)
 if len(res) == 0:
     output_empty()
-    sys.exit(0)
 
 devices = json.loads(res)
 bus_ids = []
@@ -56,7 +57,7 @@ for device in devices:
     if "NVIDIA" in device["vendor"]:
         if device["driver"] != "vfio-pci":
             requires_configuration = True
-            
+
         bus_ids.append(device["slot"])
         device_ids.add(device["vendor_id"] + ":" + device["device_id"])
 

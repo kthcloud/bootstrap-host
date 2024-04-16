@@ -30,7 +30,7 @@
   set_fact: requires_configuration="{{ gpu_info.stdout | from_json | community.general.json_query('requires_configuration')  }}"
 
 - name: "Check if has non-passthrough gpus"
-  set_fact: has_non_passthrough="{{ gpu_info.stdout | from_json | community.general.json_query('has_non_passthrough')  }}
+  set_fact: has_non_passthrough="{{ gpu_info.stdout | from_json | community.general.json_query('has_non_passthrough')  }}"
 
 - name: "Check gpu bus ids"
   set_fact: gpu_bus_ids="{{ gpu_info.stdout | from_json | community.general.json_query('bus_ids')  }}"
