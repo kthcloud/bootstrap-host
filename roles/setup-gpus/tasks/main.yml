@@ -19,7 +19,7 @@
     mode: 0755
 
 - name: "Get GPU info"
-  command: /usr/bin/kthcloud-gpus
+  command: /usr/bin/kthcloud-passthrough-gpus
   register: gpu_info
 
 - name: "Print gpu info"

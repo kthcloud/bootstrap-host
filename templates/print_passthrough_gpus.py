@@ -11,7 +11,6 @@ def output_empty():
 def output(data):
     print(json.dumps(data))
 
-          
 def run_cmd(cmd):
     proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True)
     (res, _) = proc.communicate()
@@ -29,18 +28,26 @@ devices = json.loads(res)
 bus_ids = []
 device_ids = set()
 # Run the gpu_cmd to find out what to skip
-skip_gpus = ["RTX A600"]
+skip_gpus = [
+    {"vendor": "NVIDIA", "device": "RTX A6000"},
+]
 
 requires_configuration = False
 has_non_passthrough = False
 
 for device in devices:
-    should_skip = False
-    for skip_gpu in [item for item in skip_gpus if "device" in device]:
-        if skip_gpu in device["device"]:
+    skip = False
+
+    for skip_gpu in [item for item in skip_gpus if "device" in device and "vendor" in device]:
+        skip = skip_gpu["vendor"].lower() in device["vendor"].lower() and skip_gpu["device"].lower() in device["device"].lower()
+        if skip:
             break
 
-    if should_skip:
+    if skip:
+        # Check if the device is already set up for passthrough
+        if "driver" not in device or "vfio-pci" in device["driver"]:
+            requires_configuration = True
+        
         has_non_passthrough = True
         continue
 
