@@ -47,6 +47,7 @@
 - name: "Install dependencies"
   include_tasks: 
     file: install_deps.yml
+  when: requires_configuration
  
 - name: "Edit grub config file"
   include_tasks: 

@@ -16,7 +16,6 @@
       ]
     state: latest
     update_cache: yes
-  when: requires_configuration
 
 - name: "Install non-passthrough dependencies"
   apt:

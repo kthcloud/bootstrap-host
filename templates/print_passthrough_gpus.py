@@ -28,9 +28,7 @@ devices = json.loads(res)
 bus_ids = []
 device_ids = set()
 # Run the gpu_cmd to find out what to skip
-skip_gpus = [
-    {"vendor": "NVIDIA", "device": "RTX A6000"},
-]
+skip_gpus = ["RTX A6000"]
 
 requires_configuration = False
 has_non_passthrough = False
@@ -38,14 +36,17 @@ has_non_passthrough = False
 for device in devices:
     skip = False
 
-    for skip_gpu in [item for item in skip_gpus if "device" in device and "vendor" in device]:
-        skip = skip_gpu["vendor"].lower() in device["vendor"].lower() and skip_gpu["device"].lower() in device["device"].lower()
+    if "driver" not in device:
+        continue
+
+    for skip_gpu in [item for item in skip_gpus if "device" in device]:
+        skip = skip_gpu.lower() in device["device"].lower()
         if skip:
             break
 
     if skip:
         # Check if the device is already set up for passthrough
-        if "driver" not in device or "vfio-pci" in device["driver"]:
+        if device["driver"] != "nvidia":
             requires_configuration = True
         
         has_non_passthrough = True
@@ -53,10 +54,11 @@ for device in devices:
 
 
     if "NVIDIA" in device["vendor"]:
+        if device["driver"] != "vfio-pci":
+            requires_configuration = True
+            
         bus_ids.append(device["slot"])
         device_ids.add(device["vendor_id"] + ":" + device["device_id"])
-        if "driver" not in device or "vfio-pci" not in device["driver"]:
-            requires_configuration = True
 
 output({
     "bus_ids": " ".join(bus_ids),
