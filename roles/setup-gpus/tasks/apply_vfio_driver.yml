@@ -1,11 +1,4 @@
 ---
-- name: Update LCD message
-  ansible.builtin.import_role:
-    name: lcd-update
-  vars:
-    lcd_message: "Applying VFIO driver"
-  when: configured
-
 - name: "Apply driver template"
   template: 
     src: "{{ templates_path }}/driver"
