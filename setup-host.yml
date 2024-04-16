@@ -10,8 +10,6 @@
     - apt-update-upgrade
     - apt-useful-packages
     - pip-packages
-    - disable-apparmor
-    - config-libvirt
     - setup-gpus
     - setup-host-api
     - setup-cluster
