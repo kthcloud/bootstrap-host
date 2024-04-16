@@ -4,7 +4,6 @@
     name: lcd-update
   vars:
     lcd_message: "Configuring kthcloud API"
-  when: configured
 
 # Install NodeJS 16 (only v10 when not adding repo). Will be moved later to common role
 - name: "Add nodejs apt key"
