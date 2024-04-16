@@ -12,7 +12,7 @@
     - pip-packages
     - disable-apparmor
     - config-libvirt
-    - setup-gpu-passthrough
+    - setup-gpus
     - setup-host-api
     - setup-cluster
     - lcd-reset
