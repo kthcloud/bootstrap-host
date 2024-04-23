@@ -5,13 +5,15 @@
   vars:
     lcd_message: "Configuring kthcloud API"
 
-# install bun as cloud user https://bun.sh/install, then move it to /usr/local/bin
+# install bun as root user https://bun.sh/install, then move it to /usr/local/bin
 - name: "Install bun"
   shell: "curl -fsSL https://bun.sh/install | bash"
-  remote_user: cloud
+  sudo: true
+  sudo_user: root
+  remote_user: root
 
 - name: "Move bun to /usr/local/bin"
-  shell: mv /home/cloud/bin/bun /usr/local/bin/bun
+  shell: mv /home/root/bin/bun /usr/local/bin/bun
 
 - name: "Make bun executable"
   shell: chmod a+x /usr/local/bin/bun
