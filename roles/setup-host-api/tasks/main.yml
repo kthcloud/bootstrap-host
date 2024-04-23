@@ -5,37 +5,27 @@
   vars:
     lcd_message: "Configuring kthcloud API"
 
-# Install NodeJS 16 (only v10 when not adding repo). Will be moved later to common role
-- name: "Add nodejs apt key"
-  apt_key:
-    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-    state: present
-- name: "Add nodejs 18.x ppa for apt repo"
-  apt_repository:
-    repo: deb https://deb.nodesource.com/node_18.x jammy main
-    update_cache: yes
-- name: "Install nodejs"
-  apt:
-    update_cache: yes
-    name: 
-      [
-        nodejs
-      ]
-    state: present
+- name: "Install bun"
+  ansible.builtin.shell: curl -fsSL https://bun.sh/install | bash
+
+- name: "Move bun to /usr/local/bin"
+  ansible.builtin.shell: mv /root/.bun/bin/bun /usr/local/bin/
+
+- name: "Make bun executable"
+  ansible.builtin.shell: chmod a+x /usr/local/bin/bun
+
 - name: "Delete old host-api folder"
   file:
     path: "{{ apps_install_path }}/host-api"
     state: absent
+
 - name: Clone repo
   ansible.builtin.git:
     repo: "{{ host_api_git_url }}"
     dest: "{{ apps_install_path }}/host-api"
 
-- name: "Create Unit file"
-  template: src={{ templates_path }}/host-api.service dest=/lib/systemd/system/host-api.service mode=644
+- name: "Make install.sh executable"
+  ansible.builtin.shell: chmod a+x "{{ apps_install_path }}/host-api/install.sh"
 
-- name: "Reload systemctl"
-  command: systemctl daemon-reload
-  
-- name: "Restart service"
-  service: name=host-api.service state=restarted enabled=yes
+- name: "Install host-api"
+  ansible.builtin.shell: "{{ apps_install_path }}/host-api/install.sh {{apps_install_path}}/host-api"
