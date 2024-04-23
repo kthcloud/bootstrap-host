@@ -8,8 +8,6 @@
 # install bun as root user https://bun.sh/install, then move it to /usr/local/bin
 - name: "Install bun"
   shell: "curl -fsSL https://bun.sh/install | bash"
-  sudo: true
-  sudo_user: root
   remote_user: root
 
 - name: "Move bun to /usr/local/bin"
