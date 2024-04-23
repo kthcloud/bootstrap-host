@@ -5,14 +5,16 @@
   vars:
     lcd_message: "Configuring kthcloud API"
 
+# install bun as cloud user https://bun.sh/install, then move it to /usr/local/bin
 - name: "Install bun"
-  ansible.builtin.shell: curl -fsSL https://bun.sh/install | bash
+  shell: "curl https://bun.sh | bash"
+  remote_user: cloud
 
 - name: "Move bun to /usr/local/bin"
-  ansible.builtin.shell: mv /root/.bun/bin/bun /usr/local/bin/
+  shell: mv /home/cloud/bin/bun /usr/local/bin/bun
 
 - name: "Make bun executable"
-  ansible.builtin.shell: chmod a+x /usr/local/bin/bun
+  shell: chmod a+x /usr/local/bin/bun
 
 - name: "Delete old host-api folder"
   file:
@@ -25,7 +27,7 @@
     dest: "{{ apps_install_path }}/host-api"
 
 - name: "Make install.sh executable"
-  ansible.builtin.shell: chmod a+x "{{ apps_install_path }}/host-api/install.sh"
+  shell: chmod a+x "{{ apps_install_path }}/host-api/install.sh"
 
 - name: "Install host-api"
-  ansible.builtin.shell: "{{ apps_install_path }}/host-api/install.sh {{apps_install_path}}/host-api"
+  shell: "{{ apps_install_path }}/host-api/install.sh {{apps_install_path}}/host-api"
