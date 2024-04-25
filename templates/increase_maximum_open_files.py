@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 
 GREEN = "\033[92m"
