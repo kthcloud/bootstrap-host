@@ -1,0 +1,10 @@
+- name: Copy script from templates
+  ansible.builtin.copy:
+    src: "{{ templates_path }}/increase_maximum_open_files.py"
+    dest: /usr/bin/kthcloud-increase-max-open-files
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Run script
+  command: /usr/bin/kthcloud-increase-max-open-files

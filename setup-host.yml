@@ -10,6 +10,7 @@
     - apt-update-upgrade
     - apt-useful-packages
     - pip-packages
+    - setup-util-scripts
     - setup-gpus
     - setup-host-api
     - setup-cluster
