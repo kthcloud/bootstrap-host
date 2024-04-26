@@ -20,6 +20,7 @@
         "bridge-utils",
         "lm-sensors",
         "ipmitool",
+        "nfs-common",
         "unzip",
       ]
     state: latest
