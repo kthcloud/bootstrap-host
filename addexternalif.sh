@@ -1,5 +1,5 @@
 #!/bin/bash                                                                                                    
-IF=`route | awk '$1 ~ "172.30.0.0" {print $8}'`
+IF=`ip route | awk '$1 ~ "172.30.0.0/24" {print $3}'`
 if test $IF ; then
     : all well
 else
