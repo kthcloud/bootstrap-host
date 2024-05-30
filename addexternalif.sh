@@ -24,14 +24,15 @@ EOF
     netplan apply
 fi
 
-SYSCONFFILE=/etc/sysctl.d/10-network-security.conf
-if test -f "$SYSCONFFILE" ; then
-    # patch boot config
-    sed -i 's/rp_filter=2/rp_filter=0/g' "$SYSCONFFILE"
-    # patch running config
-    for f in /proc/sys/net/ipv4/conf/*/rp_filter ; do echo 0 > $f; done
-else
-    echo "Warning: $SYSCONNFILE not found"
-fi
+for SYSCONFFILE in /etc/sysctl.d/10-network-security.conf /usr/lib/sysctl.d/50-default.conf ; do
+    if test -f "$SYSCONFFILE" ; then
+	# patch boot config
+	sed -i 's/rp_filter *= *2/rp_filter=0/g' "$SYSCONFFILE"
+	# patch running config
+	for f in /proc/sys/net/ipv4/conf/*/rp_filter ; do echo 0 > $f; done
+    else
+	echo "Warning: $SYSCONNFILE not found"
+    fi
+done
 
 exit 0
