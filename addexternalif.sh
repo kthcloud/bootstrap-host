@@ -8,17 +8,21 @@ else
 fi
 CLOUDINIT=/etc/cloud/cloud.cfg.d/50-curtin-networking.cfg
 
-cp -p "$CLOUDINIT" "$CLOUDINIT".`date +%s`
-cat << EOF >> "$CLOUDINIT"
+if grep vlan.18 "$CLOUDINIT" >/dev/null ; then
+    : already done
+else
+    cp -p "$CLOUDINIT" "$CLOUDINIT".`date +%s`
+    cat << EOF >> "$CLOUDINIT"
   vlans:
     vlan.18:
       id: 18
       mtu: 1500
       link: $IF
 EOF
-cat "$CLOUDINIT" | sed -e 's/^\( *\)/\1\1/g' > /etc/netplan/50-cloud-init.yaml
-netplan generate
-netplan apply
+    cat "$CLOUDINIT" | sed -e 's/^\( *\)/\1\1/g' > /etc/netplan/50-cloud-init.yaml
+    netplan generate
+    netplan apply
+fi
 
 SYSCONFFILE=/etc/sysctl.d/10-network-security.conf
 if test -f "$SYSCONFFILE" ; then
