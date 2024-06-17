@@ -6,5 +6,28 @@
     group: root
     mode: 0755
 
-- name: Run script
-  command: /usr/bin/kthcloud-increase-max-open-files
+# Install service kthcloud-boot.service that exist under templates folder
+- name: Copy service from templates
+  ansible.builtin.copy:
+    src: "{{ templates_path }}/kthcloud-boot.service"
+    dest: /etc/systemd/system/kthcloud-boot.service
+    owner: root
+    group: root
+    mode: 0644
+
+# Reload systemd
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+# Enable service
+- name: Enable service
+  ansible.builtin.systemd:
+    name: kthcloud-boot
+    enabled: yes
+
+# Start service
+- name: Start service
+  ansible.builtin.systemd:
+    name: kthcloud-boot
+    state: started

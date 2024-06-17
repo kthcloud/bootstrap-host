@@ -1,0 +1,11 @@
+[Unit]
+Description=Run kthcloud-increase-max-open-files at boot
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/kthcloud-increase-max-open-files
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
