@@ -19,11 +19,39 @@ else
       mtu: 1500
       link: $IF
 EOF
-    cat "$CLOUDINIT" | sed -e 's/^\( *\)/\1\1/g' > /etc/netplan/50-cloud-init.yaml
-    netplan generate
-    netplan apply
 fi
 
+# find IB interface
+IBIP=$(ip addr | awk '$1 == "inet" && $2 ~ "^172.30" {sub("\\.0\\.",".1.",$2); print $2}')
+if test "$IBIP" ; then
+    apt install -y rdma-core
+    apt install -y infiniband-diags
+    IBIF=$(dmesg | awk '$3 == "mlx5_core" && $6 == "renamed" {print $5 ; exit}')
+    if test "$IBIF"; then
+	if grep $IBIF "$CLOUDINIT"; then
+	    : already done
+	else
+	    cat <<EOF>/tmp/ibsniplet
+    $IBIF
+      addresses:
+      - $IBIP
+      mtu: 4092
+EOF
+	    awk ' { print } ; $1 == "ethernets:" { while (getline <"/tmp/ibsniplet")  print ; }' < "$CLOUDINIT" > "$CLOUDINIT.new"
+	    if diff "$CLOUDINIT" "$CLOUDINIT.new" |egrep '^<' > /dev/null ; then
+		: we did screw up the file
+	    else
+		mv  "$CLOUDINIT.new" "$CLOUDINIT"
+	    fi
+	fi
+    fi
+fi
+# Generate new netplan
+cat "$CLOUDINIT" | sed -e 's/^\( *\)/\1\1/g' > /etc/netplan/50-cloud-init.yaml
+netplan generate
+netplan apply
+
+# Fix asymeric routing
 for SYSCONFFILE in /etc/sysctl.d/10-network-security.conf /usr/lib/sysctl.d/50-default.conf ; do
     if test -f "$SYSCONFFILE" ; then
 	# patch boot config
